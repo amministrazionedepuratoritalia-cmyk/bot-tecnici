@@ -1,10 +1,17 @@
 import os
 import requests
+from datetime import datetime, timedelta
 from telegram import Update
 from telegram.ext import Application, MessageHandler, CommandHandler, filters, ContextTypes
 
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
+# Dizionario per salvare la cronologia di ogni tecnico
+conversazioni = {}
+# Dizionario per salvare l'ultimo messaggio di ogni tecnico
+ultimi_messaggi = {}
+TIMEOUT_ORE = 1  # Reset automatico dopo 1 ora di inattivita
 
 SYSTEM_PROMPT = """Sei un assistente tecnico specializzato nei purificatori d'acqua Acquasystem. Il tuo compito e capire il problema descritto dal tecnico, anche se scritto in modo informale o con parole diverse, e rispondere con la procedura corretta.
 
@@ -15,6 +22,8 @@ REGOLE:
 - Non fare domande aggiuntive, non aggiungere informazioni extra non presenti nelle procedure
 - Sii breve e diretto
 - Se una domanda potrebbe corrispondere a piu procedure, elencale tutte brevemente
+- Ricorda i messaggi precedenti della conversazione: se il tecnico dice che una soluzione non ha funzionato, proponi la causa successiva dalle procedure
+- Guida il tecnico passo passo attraverso le possibili cause fino alla soluzione
 
 ESEMPI DI INTERPRETAZIONE (non esaustivi):
 - come si resetta / reset / riavviare / ripristinare = procedure di reset
@@ -23,6 +32,7 @@ ESEMPI DI INTERPRETAZIONE (non esaustivi):
 - parte da sola / si avvia senza aprire il rubinetto / pompa che gira da sola = falsa partenza
 - non raffredda / acqua calda / non e fredda = non refrigera
 - conta litri / contatore / filtri da resettare = reset contatore filtri
+- non ha funzionato / non risolve / ho provato ma niente = proponi la causa successiva
 
 === ANOMALIE OSMOSI ===
 
@@ -116,7 +126,7 @@ RESET CONTATORE FILTRI:
 - Tenere premuto il tasto No.4 finche non compare il simbolo del menu tecnico, per entrare nel menu confermare con il tasto No.4.
 - Inserire la PW 1-4-2-1.
 - Spostarsi nel menu con il tasto No.4 fino a raggiungere la pagina COUNTDOWN FILTRO.
-- A questo punto premere il tasto il tasto No.2 finche vengono resettati i contatori.
+- A questo punto premere il tasto No.2 finche vengono resettati i contatori.
 
 === PROCEDURA AVVIAMENTO OSMOSI FV SYSTEM ===
 1. Dopo aver eseguito i collegamenti idraulici ed elettrici, accedere alla macchina.
@@ -131,7 +141,28 @@ RESET CONTATORE FILTRI:
 5. Attendere che il sistema riempia il carbonatore (la pompa si sara fermata), aprire il rubinetto dell'acqua gasata e svuotare completamente il carbonatore, quindi chiudere il rubinetto."""
 
 
-def chiedi_groq(messaggio):
+def chiedi_groq(chat_id, nuovo_messaggio):
+    # Controlla se e passata piu di 1 ora dall'ultimo messaggio
+    ora_attuale = datetime.now()
+    if chat_id in ultimi_messaggi:
+        tempo_passato = ora_attuale - ultimi_messaggi[chat_id]
+        if tempo_passato > timedelta(hours=TIMEOUT_ORE):
+            conversazioni[chat_id] = []
+
+    # Aggiorna il timestamp dell'ultimo messaggio
+    ultimi_messaggi[chat_id] = ora_attuale
+
+    # Inizializza la cronologia se non esiste
+    if chat_id not in conversazioni:
+        conversazioni[chat_id] = []
+
+    # Aggiunge il nuovo messaggio alla cronologia
+    conversazioni[chat_id].append({"role": "user", "content": nuovo_messaggio})
+
+    # Mantieni max 10 messaggi per non sforare i token
+    if len(conversazioni[chat_id]) > 10:
+        conversazioni[chat_id] = conversazioni[chat_id][-10:]
+
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -140,19 +171,27 @@ def chiedi_groq(messaggio):
     body = {
         "model": "llama-3.3-70b-versatile",
         "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": messaggio}
-        ],
+            {"role": "system", "content": SYSTEM_PROMPT}
+        ] + conversazioni[chat_id],
         "max_tokens": 500
     }
+
     risposta = requests.post(url, headers=headers, json=body, timeout=30)
     dati = risposta.json()
-    return dati["choices"][0]["message"]["content"]
+    testo_risposta = dati["choices"][0]["message"]["content"]
+
+    # Salva la risposta nella cronologia
+    conversazioni[chat_id].append({"role": "assistant", "content": testo_risposta})
+
+    return testo_risposta
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_chat.id
+    # Resetta la conversazione
+    conversazioni[chat_id] = []
     await update.message.reply_text(
-        "Ciao! Sono l'assistente tecnico Acquasystem.\n\nDescrivimi il problema riscontrato e ti guido nella soluzione."
+        "Ciao! Sono l'assistente tecnico Acquasystem.\n\nDescrivimi il problema riscontrato e ti guido nella soluzione.\n\nPer iniziare una nuova conversazione scrivi /start."
     )
 
 
@@ -161,8 +200,9 @@ async def gestisci_messaggio(update: Update, context: ContextTypes.DEFAULT_TYPE)
         chat_id=update.effective_chat.id,
         action="typing"
     )
+    chat_id = update.effective_chat.id
     testo = update.message.text
-    risposta = chiedi_groq(testo)
+    risposta = chiedi_groq(chat_id, testo)
     await update.message.reply_text(risposta)
 
 
