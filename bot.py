@@ -195,7 +195,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Resetta la conversazione
     conversazioni[chat_id] = []
     await update.message.reply_text(
-        "Ciao! Sono l'assistente tecnico Acquasystem.\n\nDescrivimi il problema riscontrato e ti guido nella soluzione.\n\nPer iniziare una nuova conversazione scrivi /start."
+        "Ciao! Sono l'assistente tecnico Depuratoritalia.\n\nDescrivimi il problema riscontrato e ti guido nella soluzione.\n\nPer iniziare una nuova conversazione scrivi /start."
     )
 
 
@@ -214,7 +214,7 @@ def main():
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, gestisci_messaggio))
-    print("Bot Acquasystem avviato...")
+    print("Bot Depuratoritalia avviato...")
     app.run_polling()
 
 
