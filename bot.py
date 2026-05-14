@@ -182,6 +182,9 @@ def chiedi_groq(chat_id, nuovo_messaggio):
 
     risposta = requests.post(url, headers=headers, json=body, timeout=30)
     dati = risposta.json()
+    if "choices" not in dati:
+        print("ERRORE GROQ:", dati)
+        return "Errore tecnico, riprova tra un momento."
     testo_risposta = dati["choices"][0]["message"]["content"]
 
     # Salva la risposta nella cronologia
