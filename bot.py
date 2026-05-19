@@ -142,7 +142,86 @@ RESET CONTATORE FILTRI:
 2. Aprire il rubinetto dell'acqua fredda e lasciare erogare per almeno 2 minuti.
 3. Aprire il rubinetto dell'acqua naturale ambiente e lasciare erogare per 2 minuti e chiuderlo.
 4. Se si verifica il TIME OUT LIVELLO, spegnere e accendere la macchina.
-5. Attendere che il sistema riempia il carbonatore (la pompa si sara fermata), aprire il rubinetto dell'acqua gasata e svuotare completamente il carbonatore, quindi chiudere il rubinetto."""
+5. Attendere che il sistema riempia il carbonatore (la pompa si sara fermata), aprire il rubinetto dell'acqua gasata e svuotare completamente il carbonatore, quindi chiudere il rubinetto.
+
+=== POMPA IN CAVITAZIONE ===
+
+La pompa fa molto rumore perche non le arriva acqua a sufficienza.
+NOTA: In tutti i casi di rumore e sempre consigliabile lubrificare la pompa.
+
+Procedura:
+1. Controlla che il rubinetto di carico (quello che apre e chiude l acqua alla macchina) sia aperto
+2. Se e aperto, chiudilo e stacca il tubo di carico. Metti il tubo in un secchio e apri il rubinetto per verificare che la pressione dell acqua sia adeguata
+3. Se la pressione e adeguata, sostituisci l elettrovalvola di ingresso
+4. Se non risolve, scollega il filtro a carboni dalla pompa e metti il tubo in un secchio. Con la macchina accesa e acqua aperta, apri il beverino e verifica se dal filtro a carboni esce acqua con flusso abbondante. Se non esce o il flusso e scarso, sostituisci sia il filtro sedimenti che quello a carboni
+
+=== DISPLAY NON FUNZIONA ===
+
+Procedura:
+1. Controlla che il cavo sia collegato bene sia alla centralina che al display
+2. Se il collegamento e ok, allenta le viti che fissano il display alla macchina - a volte se sono troppo strette impediscono il corretto funzionamento
+3. Se non risolve, sostituisci il display
+
+=== TROPPO RUMORE ===
+
+NOTA: In tutti i casi di rumore e sempre consigliabile lubrificare la pompa.
+
+Causa 1 - Pompa in cavitazione: Segui la procedura POMPA IN CAVITAZIONE qui sopra.
+
+Causa 2 - Motore rumoroso:
+1. Stacca la pompa dal motore rimuovendo il collare di metallo con la vite
+2. Fai girare la ventola del motore a mano - se fa rumore il motore e da sostituire
+3. Se non fa rumore, rimonta la pompa e cerca cosa vibra nella macchina
+
+Causa 3 - Vibrazione:
+1. Cerca qualcosa che tocca o vibra contro la scocca della macchina (tubi, detersivi sotto il lavello, ecc.)
+2. Una volta trovato, isola il punto di contatto
+3. Se e la macchina stessa a vibrare (soprattutto se in orizzontale o appoggiata a terra), metti un materassino in gomma, gomma piuma o cartone sotto la macchina o tra la macchina e il mobile
+
+=== SALTA CORRENTE ===
+
+ATTENZIONE: Usa sempre i guanti di gomma prima di toccare qualsiasi parte elettrica.
+
+Procedura:
+1. Prima di tutto collega un elettrodomestico (es. phon) alla stessa presa del depuratore per verificare che il problema non sia della presa del cliente
+2. Controlla il cavo di alimentazione - se sembra danneggiato sostituiscilo. In ogni caso prova a sostituirlo per escluderlo come causa
+3. Controlla se ci sono cavi scoperti e isolali o sostituiscili
+4. Controlla il cavo di massa (giallo e verde, attaccato alla scocca con vite o dado) - se e ossidato o arrugginito, scollegalo e pulisci con spazzolina di ferro e pulitore per contatti
+5. Controlla il condensatore per tracce di bruciato o ossidazione. ATTENZIONE: prima di toccarlo scaricalo cortocircuitando i due connettori con un cacciavite. Se ossidato puliscilo, se bruciato sostituiscilo, se sembra ok sostituiscilo comunque come ultima prova
+6. Controlla se ci sono perdite che bagnano il motore o la centralina
+
+=== MACCHINA NON SI ACCENDE ===
+
+ATTENZIONE: Usa sempre i guanti di gomma.
+
+Procedura:
+1. Collega un elettrodomestico (es. phon) alla stessa presa per verificare che non sia un problema della presa del cliente
+2. Controlla il cavo di alimentazione - prova a sostituirlo per escluderlo come causa
+3. Controlla il fusibile: si trova di fianco alla presa del cavo di alimentazione, all interno di uno sportellino nero. Per aprirlo, inserisci un cacciavite a taglio nella fessura e fai leva. Esamina il fusibile: se ha parti scure, opacizzate, o il filamento interno e interrotto, sostituiscilo
+4. Controlla il condensatore (vedi procedura SALTA CORRENTE punto 5)
+
+=== BOMBOLA FINISCE SUBITO ===
+
+Procedura:
+1. Controlla che ci sia la guarnizione nel riduttore di pressione
+2. Verifica che la pressione del riduttore non sia impostata sopra 3,5 bar
+3. Controlla eventuali perdite lungo tutto il percorso del gas (tubo e raccordi a innesto rapido). Avvicina l orecchio alle varie parti per sentire perdite, oppure cerca parti ghiacciate o semi-ghiacciate che indicano una fuoriuscita di gas
+
+=== ACQUA CON CALCARE (TDS alto) ===
+
+Procedura:
+1. Verifica che la valvola mix sia chiusa e regolala fino a chiuderla completamente
+2. Se anche chiusa completamente il TDS resta alto, sostituisci la valvola mix
+3. Se non si risolve, sostituisci le membrane
+
+=== PARTICELLE NELL ACQUA ===
+
+Procedura:
+1. Verifica il TDS - se e alto segui la procedura ACQUA CON CALCARE
+2. Se il TDS e nella norma, verifica che le particelle non vengano dalle stoviglie del cliente non completamente sciacquate - anche tracce minime di detersivo possono causare il problema
+3. Prendi un bicchiere pulito, sciacqualo molto bene e riempilo - se il problema persiste
+4. Aggiungi all uscita dell acqua depurata un filtro anti sapore e odore
+5. Se il problema persiste ancora, usa uno spazzolino molto lungo e sottile per pulire la canna del rubinetto"""
 
 
 def chiedi_groq(chat_id, nuovo_messaggio):
